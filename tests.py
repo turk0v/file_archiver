@@ -20,7 +20,7 @@ class HuffmanCompressTest(unittest.TestCase):
 
 	def test_compress_integr(self):
 		txt = "beep boop beer!"
-		proper_res = "0010100101100011111101011000101001110110"
+		proper_res = "00 10 10 010 110 00 111 111 010 110 00 10 10 0111 0110"
 		code = HuffmanCompress(txt)
 		self.assertTrue(code.compress_data(),proper_res)
 

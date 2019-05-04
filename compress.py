@@ -50,9 +50,5 @@ class CompressData(object):
 			res = self.make_byte_array(encoded_text)
 			file_out.write(bytes(res))
 		self.print_size_results(self.in_path,file_out_name)
-
-
-
-c = CompressData('numbers.txt')
-c.compress_file()		
+	
 
