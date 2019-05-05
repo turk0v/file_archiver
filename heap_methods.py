@@ -10,12 +10,15 @@ class HeapNode(object):
 	def __repr__(self):
 		return "sym:{} -- freq:{} -- left :{} -- right :{}".format(self.symbol,self.freq,self.left,self.right)
 
-	def __cmp__(self, other):
-		if(other == None):
-			return -1
-		if(not isinstance(other, HeapNode)):
-			return -1
-		return self.freq > other.freq
+	def __lt__(self, other):
+	    return self.freq < other.freq
+
+	def __eq__(self, other):
+	    if(other == None):
+	        return False
+	    if(not isinstance(other, HeapNode)):
+	        return False
+	    return self.freq == other.freq
 
 
 

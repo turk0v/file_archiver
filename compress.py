@@ -1,4 +1,5 @@
 from huffman import HuffmanCompress
+from lzw import LZW
 import os
 
 class CompressData(object):
@@ -6,12 +7,15 @@ class CompressData(object):
 		self.in_path = file_in_path
 
 	def run_encoding_algorithm(self,text):
+		"""Run LZW after Huffman"""
 		huf_res = HuffmanCompress(text)
-		return (huf_res.compress_data())
+		lzw_res = LZW(huf_res.compress_data())
+		return (lzw_res.encode_text())
+
 
 
 	def add_padding_to_binary(self,text):
-		# Converting encoded text to proper size binary size
+		"""Convert encoded text to proper size binary size"""
 		encoded_text = text
 		extra_zero = 8 - len(encoded_text) % 8
 		for i in range(extra_zero):
@@ -21,7 +25,7 @@ class CompressData(object):
 		return encoded_text
 
 	def make_byte_array(self,b_text):
-		# Creating byte text form converted encoded text
+		"""Create byte text form converted encoded text"""
 		if(len(b_text) % 8 != 0):
 			print("bad binary convertion")
 			return
@@ -50,5 +54,4 @@ class CompressData(object):
 			res = self.make_byte_array(encoded_text)
 			file_out.write(bytes(res))
 		self.print_size_results(self.in_path,file_out_name)
-	
 

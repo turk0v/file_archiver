@@ -23,7 +23,6 @@ class LZW(object):
 
 	def encode_text(self):
 		self.make_code_dict()
-		print(self.code_dict)
 		for symbol in self.text_in.split(" "):
 			if symbol in self.code_dict.keys():
 				self.encoded_text += self.code_dict[symbol]
