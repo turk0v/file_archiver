@@ -92,7 +92,6 @@ class CompressData(object):
 			for key in decode_dict.keys():
 				if tmp_smb == key:
 					dec_text += decode_dict[key]
-
 		return dec_text
 
 
@@ -109,8 +108,6 @@ class CompressData(object):
 
 		with open(file_in_name,'rb') as file_in,open(file_out_name,'w') as file_out:
 			bit_string = ""
-			print(file_in_name)
-			print(file_out_name)
 
 			byte = file_in.read(1)
 			while(byte != b""):
@@ -121,14 +118,10 @@ class CompressData(object):
 
 			encoded_text = self.remove_padding(bit_string)
 			dec_text = self.decode_text(encoded_text)
-
 			file_out.write(dec_text)
 		self.print_decompression_results(file_in_name,file_out_name)
 
 
-s = CompressData("numbers.txt")
-s.compress_file()
-s.decode_file()
 
 
 
