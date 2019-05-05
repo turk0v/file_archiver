@@ -13,6 +13,8 @@ def parse_commands():
 		if sys.argv[2] == "-d":
 			print("Decompressig...\n")
 			file_to_compress.decode_file()
+		if sys.argv[2] != "-d":
+			raise Exception("Wrong flag used")
 	except IndexError as e:
 		pass
 
