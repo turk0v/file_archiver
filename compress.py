@@ -5,12 +5,20 @@ import os
 class CompressData(object):
 	def __init__(self,file_in_path):
 		self.in_path = file_in_path
+		self.lzw_codes = {}
+		self.huf_codes = {}
+		self.code_intervals = []
 
 	def run_encoding_algorithm(self,text):
 		"""Run LZW after Huffman"""
 		huf_res = HuffmanCompress(text)
 		lzw_res = LZW(huf_res.compress_data())
-		return (lzw_res.encode_text())
+		res = lzw_res.encode_text()
+		self.huf_codes = huf_res.codes_dict
+		self.lzw_codes = lzw_res.code_dict
+		self.code_intervals = lzw_res.encoded_insert_length
+		return res
+
 
 
 
@@ -54,4 +62,83 @@ class CompressData(object):
 			res = self.make_byte_array(encoded_text)
 			file_out.write(bytes(res))
 		self.print_size_results(self.in_path,file_out_name)
+
+	def remove_padding(self,padded_text):
+		padded_info = padded_text[:8]
+		extra_padding = int(padded_info,2)
+		padded_text = padded_text[8:]
+		encoded_text = padded_text[:-1*extra_padding]
+		return encoded_text
+
+	def transform_codes_dicts(self):
+		"""Concatinate LZW and Huffman dicts"""
+		inv_lzw_codes = {v: k for k, v in self.lzw_codes.items()}
+		inv_huf_codes = {v: k for k, v in self.huf_codes.items()}
+		res_dict = {}
+		for key2 in inv_huf_codes:
+			if key2 in inv_lzw_codes.values():
+				res_dict[self.lzw_codes[key2]] = inv_huf_codes[key2]
+		for key in inv_lzw_codes:
+			if (inv_lzw_codes[key] == ''):
+				res_dict[key] = ''
+		return res_dict
+
+	def decode_text(self,encoded_text):
+		dec_text = ""
+		decode_dict = self.transform_codes_dicts()
+		for i in self.code_intervals:
+			tmp_smb = encoded_text[:i]
+			encoded_text = encoded_text[i:]
+			for key in decode_dict.keys():
+				if tmp_smb == key:
+					dec_text += decode_dict[key]
+
+		return dec_text
+
+
+	def print_decompression_results(self,file1,file2):
+		file1_size = os.stat(file1).st_size
+		file2_size = os.stat(file2).st_size
+		print("Before decompression size {}".format(file1_size))
+		print("After decompression size {}".format(file2_size))
+
+	def decode_file(self):
+		file_in_name_tmp = os.path.splitext(self.in_path)[0]
+		file_out_name = file_in_name_tmp + "_decomp" + ".txt"
+		file_in_name = file_in_name_tmp + ".bin"
+
+		with open(file_in_name,'rb') as file_in,open(file_out_name,'w') as file_out:
+			bit_string = ""
+			print(file_in_name)
+			print(file_out_name)
+
+			byte = file_in.read(1)
+			while(byte != b""):
+				byte = ord(byte)
+				bits = bin(byte)[2:].rjust(8, '0')
+				bit_string += bits
+				byte = file_in.read(1)
+
+			encoded_text = self.remove_padding(bit_string)
+			dec_text = self.decode_text(encoded_text)
+
+			file_out.write(dec_text)
+		self.print_decompression_results(file_in_name,file_out_name)
+
+
+s = CompressData("numbers.txt")
+s.compress_file()
+s.decode_file()
+
+
+
+
+
+
+
+
+
+
+
+
 

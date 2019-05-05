@@ -53,7 +53,6 @@ class HuffmanCompress(object):
 		return(self.codes_dict)
 
 
-
 	def compress_data(self):
 		self.build_freq_dict()
 		self.make_heap()
@@ -62,7 +61,7 @@ class HuffmanCompress(object):
 		for sym in self.txt_in:
 			for key in self.codes_dict.keys():
 				if (sym == key):
-					self.compressed_txt += self.codes_dict[key] + " "
+					self.compressed_txt += self.codes_dict[key]+" "
 
 		return(self.compressed_txt)
 
